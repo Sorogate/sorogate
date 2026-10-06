@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       # Contracts built with soroban-sdk 28 must be built with `stellar contract build`.
-      - uses: stellar/stellar-cli@v27.1.0
+      - uses: stellar/stellar-cli@v28.1.0
       - name: Install the pinned Rust toolchain
         run: rustup show active-toolchain || rustup toolchain install
       - run: cargo fmt --all -- --check
