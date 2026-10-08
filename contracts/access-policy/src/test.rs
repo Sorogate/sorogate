@@ -295,6 +295,56 @@ fn deactivating_denies_everyone_and_does_not_change_the_version() {
     assert_eq!(c.evaluate(&id, &holder), allowed(2));
 }
 
+// `set_active` with the value a policy already has. The spec says what it changes (`active`) and what it leaves alone
+// (`version`), not what a call that changes nothing does. These two tests document what the contract does today: the call
+// succeeds, the version and the decision are untouched, and `active_changed` is published again although nothing changed. They
+// describe the behaviour, they do not endorse it. If a no-op should publish nothing, that is a change to the contract and to the
+// spec, and belongs in its own issue.
+
+#[test]
+fn setting_active_on_an_active_policy_succeeds_and_still_publishes_active_changed() {
+    let env = new_env();
+    let c = client(&env);
+    let owner = Address::generate(&env);
+    let holder = Address::generate(&env);
+    let token = token_with(&env, &holder, 100);
+    let id = c.create(&owner, &list(&env, &[tb(&token, 1)]));
+
+    c.set_active(&id, &true);
+
+    assert_eq!(
+        env.events().all(),
+        std::vec![ActiveChanged { id, active: true }.to_xdr(&env, &c.address)]
+    );
+    assert_eq!(c.get(&id).version, 1);
+    assert!(c.get(&id).active);
+    assert_eq!(c.evaluate(&id, &holder), allowed(1));
+}
+
+#[test]
+fn setting_active_to_false_on_an_inactive_policy_succeeds_and_still_publishes_active_changed() {
+    let env = new_env();
+    let c = client(&env);
+    let owner = Address::generate(&env);
+    let holder = Address::generate(&env);
+    let token = token_with(&env, &holder, 100);
+    let id = c.create(&owner, &list(&env, &[tb(&token, 1)]));
+    c.set_active(&id, &false);
+
+    c.set_active(&id, &false);
+
+    assert_eq!(
+        env.events().all(),
+        std::vec![ActiveChanged { id, active: false }.to_xdr(&env, &c.address)]
+    );
+    assert_eq!(c.get(&id).version, 1);
+    assert!(!c.get(&id).active);
+    assert_eq!(
+        c.evaluate(&id, &holder),
+        denied(1, None, DenyReason::Inactive)
+    );
+}
+
 #[test]
 fn evaluate_needs_no_authorization() {
     let env = new_env();

@@ -49,7 +49,7 @@ rules live in one place, an owner can change them without redeploying every cont
 
 ## What exists
 
-- **The contract**, [`contracts/access-policy`](contracts/access-policy): `create`, `update`, `set_active`, `get`, `evaluate`, `bump`, with 27 unit tests,
+- **The contract**, [`contracts/access-policy`](contracts/access-policy): `create`, `update`, `set_active`, `get`, `evaluate`, `bump`, with 29 unit tests,
   including a Stellar asset contract and deliberately broken tokens.
 - **The model and SDK**, [`packages/sdk`](packages/sdk): a TypeScript model of the rules, a read-only client for a deployed contract, and
   builders for unsigned transactions. Not published. The contract, not the model, is the authoritative answer.

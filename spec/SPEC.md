@@ -125,6 +125,10 @@ and when `reason == Inactive`; otherwise it is `Some(i)` with `i < conditions.le
 | `evaluate(id, subject) -> Decision` | anyone | Read-only. |
 | `bump(id)` | anyone | Extends the lifetime of the policy and of the contract (its instance and its code). |
 
+`set_active` with the value the policy already has succeeds. It stores the policy as it was, extends the lifetimes as any
+write does, does not change `version`, and still publishes `active_changed`, so an `active_changed` event does not by itself
+mean that `active` changed.
+
 There is no ownership transfer, no deletion and no administrator. An abandoned policy is deactivated.
 `version` lets a consumer notice that the rules behind an id changed; a consumer that wants fixed rules
 compares `Decision.version` with the version it reviewed and refuses otherwise.
