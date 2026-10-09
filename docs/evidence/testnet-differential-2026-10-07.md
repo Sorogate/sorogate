@@ -10,15 +10,14 @@ The deployed contract and the TypeScript model gave the **same decision in all 1
 policies, each evaluated for 4 subjects. No disagreements, no cases that could not be read from one ledger, and no
 case where a stored policy differed from what was sent (the codec round-tripped every policy through the contract).
 
-30 of the 120 decisions (25.0%) were allowed.
-
 | Decision | Count |
 | --- | --- |
-| `BelowMinimum` | 32 |
-| allowed (`None`) | 30 |
-| `BalanceUnavailable` | 30 |
-| `Inactive` | 24 |
-| `BeforeWindow` | 4 |
+| `BalanceUnavailable` | 36 |
+| `Inactive` | 28 |
+| `BelowMinimum` | 29 |
+| `AfterWindow` | 13 |
+| `BeforeWindow` | 9 |
+| allowed (`None`) | 5 |
 
 ## How it was done
 
@@ -41,7 +40,11 @@ case where a stored policy differed from what was sent (the codec round-tripped 
 
 ## What it does not show
 
-- The generator now targets a subject for 70% of policies and constructs token/NFT and time-window conditions to satisfy that subject where suitable balances are available, while retaining the original random fallback. This increased allowed decisions to 25% of the recorded comparisons. Most random subjects evaluating a random policy will still fail. The allowed path is also covered by the shared vectors and offline tests.
+- **The allowed path is thin.** Only 5 of 120 decisions were allowed. The generator aims minimums at balances, but
+  with random balances most policies fail somewhere. The allowed path is covered much better by the shared vectors
+  and the random offline test, which run thousands of cases; do not read this run as evidence about it.
+  A later run, with a generator changed to exercise this path, is in
+  [`testnet-differential-2026-10-09.md`](testnet-differential-2026-10-09.md).
 - Four subjects, all ordinary accounts. **Contract accounts (`C...`) as subjects** were not part of this run
   (a contract address was checked in the earlier smoke run).
 - Only one real token, and only the Stellar asset contract. **No third-party token** such as OpenZeppelin's, and

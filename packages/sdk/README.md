@@ -117,8 +117,9 @@ consumer can implement to plug a verifier in. [`docs/CREDENTIALS.md`](../../docs
 
 `scripts/testnet-differential.ts` deploys the contract and the test-token fixtures to Testnet with throwaway keys, creates
 random policies, and checks that `evaluateOnChain` and the model agree for every one. It takes a few minutes, talks to a
-public network, and is not part of CI. The result of one run is in
-[`docs/evidence`](../../docs/evidence/testnet-differential-2026-10-07.md).
+public network, and is not part of CI. The results of two runs are in
+[`docs/evidence`](../../docs/evidence/testnet-differential-2026-10-07.md) and, after the generator was changed to
+exercise the allowed path, [`2026-10-09`](../../docs/evidence/testnet-differential-2026-10-09.md).
 
 ```bash
 stellar contract build
