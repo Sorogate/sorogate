@@ -43,6 +43,8 @@ case where a stored policy differed from what was sent (the codec round-tripped 
 - **The allowed path is thin.** Only 5 of 120 decisions were allowed. The generator aims minimums at balances, but
   with random balances most policies fail somewhere. The allowed path is covered much better by the shared vectors
   and the random offline test, which run thousands of cases; do not read this run as evidence about it.
+  A later run, with a generator changed to exercise this path, is in
+  [`testnet-differential-2026-10-09.md`](testnet-differential-2026-10-09.md).
 - Four subjects, all ordinary accounts. **Contract accounts (`C...`) as subjects** were not part of this run
   (a contract address was checked in the earlier smoke run).
 - Only one real token, and only the Stellar asset contract. **No third-party token** such as OpenZeppelin's, and

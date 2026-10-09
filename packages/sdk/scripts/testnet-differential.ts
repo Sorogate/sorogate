@@ -137,24 +137,52 @@ function minimumNear(rng: Rng, balance: bigint | undefined, max: bigint): bigint
   return pick < 1n ? 1n : pick > max ? max : pick;
 }
 
-function randomConditions(rng: Rng, world: World, now: bigint): Condition[] {
+function randomConditions(rng: Rng, world: World, now: bigint, targetSubject: SubjectName | null): Condition[] {
   const names = Object.keys(world.tokens);
   const ofKind = (kind: string) => names.filter((n) => world.tokens[n]?.kind === kind);
-  const subject = rng.pick(SUBJECT_NAMES);
-  const count = 1 + rng.int(6);
+  const subject = targetSubject ?? rng.pick(SUBJECT_NAMES);
+  const count = targetSubject !== null ? 1 + rng.int(2) : 1 + rng.int(6);
   const list: Condition[] = [];
   for (let i = 0; i < count; i++) {
     const kind = rng.pick(['token', 'token', 'nft', 'window'] as const);
-    if (kind === 'token') {
-      const name = rng.chance(0.85) ? rng.pick(ofKind('fungible')) : rng.pick([...ofKind('collection'), ...ofKind('odd')]);
-      const t = world.tokens[name];
-      if (t === undefined) continue;
-      list.push({ type: 'token_balance', token: t.address, min: minimumNear(rng, t.balances[subject], 2n ** 127n - 1n) });
-    } else if (kind === 'nft') {
-      const name = rng.chance(0.85) ? rng.pick(ofKind('collection')) : rng.pick([...ofKind('fungible'), ...ofKind('odd')]);
-      const t = world.tokens[name];
-      if (t === undefined) continue;
-      list.push({ type: 'nft_balance', collection: t.address, min: Number(minimumNear(rng, t.balances[subject], 4294967295n)) });
+    if (kind === 'token' || kind === 'nft') {
+      const isNft = kind === 'nft';
+      let tokenName: string | undefined;
+      let minVal: bigint = 1n;
+
+      if (targetSubject !== null) {
+        const validTokens = names.filter((n) => {
+          const t = world.tokens[n];
+          if (!t) return false;
+          if (isNft && t.kind !== 'collection' && !rng.chance(0.15)) return false;
+          if (!isNft && t.kind !== 'fungible' && !rng.chance(0.15)) return false;
+          return (t.balances[targetSubject] ?? 0n) >= 1n;
+        });
+        if (validTokens.length > 0) {
+          tokenName = rng.pick(validTokens);
+          const balance = world.tokens[tokenName]!.balances[targetSubject]!;
+          const max = isNft ? 4294967295n : 2n ** 127n - 1n;
+          const candidates = [1n, 2n, 100n, balance, balance - 1n]
+            .filter((x) => x >= 1n && x <= balance && x <= max);
+          minVal = candidates.length === 0 ? 1n : rng.pick(candidates);
+        }
+      }
+
+      if (!tokenName) {
+        tokenName = rng.chance(0.85) ? rng.pick(ofKind(isNft ? 'collection' : 'fungible')) : rng.pick([...ofKind(isNft ? 'fungible' : 'collection'), ...ofKind('odd')]);
+        const t = world.tokens[tokenName];
+        if (!t) continue;
+        minVal = minimumNear(rng, t.balances[subject], isNft ? 4294967295n : 2n ** 127n - 1n);
+      }
+
+      const t = world.tokens[tokenName];
+      if (!t) continue;
+
+      if (isNft) {
+        list.push({ type: 'nft_balance', collection: t.address, min: Number(minVal) });
+      } else {
+        list.push({ type: 'token_balance', token: t.address, min: minVal });
+      }
     } else {
       for (;;) {
         const edges = [now - 30n, now - 5n, now, now + 5n, now + 30n, now + 3600n].map((v) => (v < 0n ? 0n : v));
@@ -162,6 +190,12 @@ function randomConditions(rng: Rng, world: World, now: bigint): Condition[] {
         const to = rng.chance(0.3) ? null : rng.pick(edges);
         if (from === null && to === null) continue;
         if (from !== null && to !== null && from >= to) continue;
+
+        if (targetSubject !== null) {
+          if (from !== null && from > now) continue;
+          if (to !== null && to < now + 30n) continue;
+        }
+
         list.push({ type: 'time_window', notBefore: from, notAfter: to });
         break;
       }
@@ -215,7 +249,8 @@ async function main(): Promise<void> {
 
   for (let n = 0; n < POLICIES; n++) {
     const now = BigInt((await server.getLatestLedger()).closeTime);
-    const conditions = randomConditions(rng, world, now);
+    const targetSubject = rng.chance(0.7) ? rng.pick(SUBJECT_NAMES) : null;
+    const conditions = randomConditions(rng, world, now, targetSubject);
     const valid = validateConditions(conditions, () => true);
     if (!valid.ok) throw new Error(`generated an invalid policy: ${valid.error}`);
 
@@ -243,6 +278,9 @@ async function main(): Promise<void> {
 
   const reasons: Record<string, number> = {};
   for (const r of rows) reasons[r.onChain.reason] = (reasons[r.onChain.reason] ?? 0) + 1;
+  const allowedCount = rows.filter((r) => r.onChain.allowed).length;
+  const allowedShare = `${((allowedCount / rows.length) * 100).toFixed(1)}%`;
+
   const summary = {
     label: 'Recorded',
     network: `Stellar Testnet (protocol ${network.protocolVersion})`,
@@ -250,6 +288,8 @@ async function main(): Promise<void> {
     seed: SEED,
     policies: POLICIES,
     comparisons: rows.length,
+    allowedDecisions: allowedCount,
+    allowedShare,
     disagreements: mismatches.length,
     unpaired,
     codecProblems,
