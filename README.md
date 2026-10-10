@@ -82,8 +82,8 @@ Nothing is promised. Nothing here is called useful until a contract nobody here 
 ## Build and test
 
 You need Rust (the version in `rust-toolchain.toml`, with the `wasm32v1-none` target), the
-[Stellar CLI](https://github.com/stellar/stellar-cli) 25.2 or newer, and Node 22.22.2 or newer for development. The SDK itself supports Node 22.12.0 or newer. Contracts built with soroban-sdk 28 must be built with `stellar contract build`; a plain `cargo build` is refused.
-
+[Stellar CLI](https://github.com/stellar/stellar-cli) 25.2 or newer, and Node 22.12 or newer (what the SDK's dependencies and the web page's build declare; the web page's tests use jsdom, which
+declares 22.22.2 or newer and prints a warning on older versions). Contracts built with soroban-sdk 28 must be built with `stellar contract build`; a plain `cargo build` is refused.
 
 ```bash
 cargo test --workspace          # contract unit tests and the vectors
