@@ -67,8 +67,8 @@ The look is deliberate, and it is kept simple enough to maintain: one stylesheet
 
 ## Develop
 
-Building needs Node 22.12 or newer (Astro's requirement, and the SDK's too). The tests also use jsdom, which asks
-for 22.22.2, 24.15 or newer; on 22.22.1 npm prints a warning and the tests still passed. CI uses the latest 22, and one job also runs the tests on 22.12.0.
+You need Node 22.22.2 or newer (24.15 or newer on Node 24, or Node 26). Astro asks for less, but the tests use jsdom, and the
+patched undici behind it, which ask for this range. CI uses the latest 22, and one job also runs the tests on 22.22.2.
 
 ```bash
 npm ci                              # from the repository root

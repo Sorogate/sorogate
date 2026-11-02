@@ -9,9 +9,10 @@ Thank you for looking. Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) first
   installs it (with the `wasm32v1-none` target) the first time you run `cargo` here.
 - The **[Stellar CLI](https://github.com/stellar/stellar-cli)**, 25.2 or newer. CI uses 28.1.0; the runs recorded in `docs/evidence` used 27.1.0.
   Contracts built with soroban-sdk 28 must be built with `stellar contract build`; a plain `cargo build` is refused.
-- **Node** 22.12 or newer, which is what the SDK's dependencies and the web page's build (Astro) declare. The web page's tests
-  use jsdom, which declares 22.22.2 or newer; on 22.12 npm prints a warning and the tests pass. CI runs the latest 22, and a
-  separate job runs the SDK and the tests on 22.12.0.
+- **Node** 22.22.2 or newer (24.15 or newer on Node 24, or Node 26). That is the range declared by jsdom, which the web page's
+  tests use, and by the patched undici, which fixes published security advisories. CI runs the latest 22, and a separate job
+  runs the SDK and the tests on 22.22.2. Raising this floor again means changing `engines` in the three `package.json` files and
+  the lockfile, the version in that job, and these docs together.
 - **No Docker and no wallet.** Everything in the daily loop runs without them.
 
 The first Rust build compiles every dependency and takes several minutes (about eight in total for the three steps
