@@ -18,6 +18,12 @@ updates:
       # typescript-eslint does not yet accept TypeScript 7.
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
+      # Astro 7.4 refuses to build on Node older than 22.23.4, and the documented minimum is 22.22.2 (engines, README,
+      # CONTRIBUTING). Patch releases of 7.3 still arrive. Move the minimum and take Astro 7.4 together, on purpose. This
+      # ignore may also hold back a security fix that exists only in a newer Astro, so do not rely on Dependabot for that:
+      # the weekly Audit job (npm audit, high and above) and the repository's security alerts report it.
+      - dependency-name: astro
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
