@@ -1,0 +1,15 @@
+# Settings for `cargo audit`, which .github/workflows/audit.yml runs from the repository root.
+#
+# An advisory is ignored here only after two things are written down in docs/THREAT_MODEL.md ("A compromised dependency"):
+# why it cannot be fixed by updating, and why it does not reach the deployed contract. The second is checked with
+#   cargo tree -i <crate> -e normal --target wasm32v1-none
+# which prints "nothing to print" when the crate is not in the contract's build.
+#
+# An ignored advisory is not reported again, so each entry names what would make it go away.
+[advisories]
+ignore = [
+  # crypto-bigint 0.5.5: timing variability in operations meant to be constant-time. Fixed only in 0.7.6 or later. It is
+  # reached through soroban-env-host (the Soroban host used by tests), whose every release up to 30.0.0 depends on
+  # elliptic-curve 0.13, and so on crypto-bigint 0.5. Remove this entry when a soroban-env-host release moves off it.
+  "RUSTSEC-2026-0387",
+]
