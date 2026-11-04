@@ -1,0 +1,36 @@
+{
+  "label": "Recorded",
+  "network": "Stellar Testnet (protocol 30)",
+  "ranAt": "2026-11-04T12:51:44.380Z",
+  "seed": 1,
+  "policies": 8,
+  "comparisons": 32,
+  "allowedDecisions": 11,
+  "allowedShare": "34.4%",
+  "disagreements": 0,
+  "unpaired": [],
+  "codecProblems": [],
+  "decisionsByReason": {
+    "BelowMinimum": 14,
+    "None": 11,
+    "BalanceUnavailable": 3,
+    "Inactive": 4
+  },
+  "contracts": {
+    "accessPolicy": "CCRGR5USGRR3OIT77E7N3Y4BBXRGIQOEJQ2D6PO5HPEPOYP4NNAIKOO2",
+    "accessPolicyWasmSha256": "f702e9d267262ab3f9548fa62021b4c31bb5b5f4f3652ff713906dcd48906814",
+    "mockTokenWasmSha256": "89146b0e1d5ae367c9c46499710a966e16cfdc6e58fa663949c6af39840922f3",
+    "tokens": {
+      "coin0": "CAN55JAGHZICPYZ2L5TETXWB7EO3X3KJDTNM2MOWVWMBTLCSRYEXGDMO",
+      "coin1": "CCWZYGQVKFOX6ZY6PWUZP7JG7EDO63E7KCAEOGFAYGYEYIIMI3QS6PMP",
+      "coin2": "CD4JNZ4HRWQ7MUFQ4RHLEZLOSGQKBCGEQVRV5BQFHSYVZF4NAP2B2HX7",
+      "set0": "CAHZIV7HH6PFTF77BR4UF4EA2BW5D44UH55MTHAS7SEZTBVOYHUTTZZO",
+      "set1": "CAOEECE2E6I4M4HC3UHEPA6KB36XZUT3YAQSCJYXZ7EE4SLG3LKMWWKW",
+      "wide": "CBTXY7HWPENG2RNUGMOHDLHTXDVSA7GQEIZOFBN2VUCOSZKWIQHHBXLU",
+      "broken": "CAC3MUEI2GNGDB45WODFLQ2SBLARM5NTI5N65GZTXVDTF3I6SGR5D5TT",
+      "nofn": "CCRGR5USGRR3OIT77E7N3Y4BBXRGIQOEJQ2D6PO5HPEPOYP4NNAIKOO2",
+      "asset": "CBLMHIRY7QTUUGXPKIN7UGFHG2PTJFOTOBJJMZV6PZHFJBZVNL2QPQOO"
+    }
+  },
+  "mismatches": []
+}

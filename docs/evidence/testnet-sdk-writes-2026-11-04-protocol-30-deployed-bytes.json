@@ -1,0 +1,86 @@
+{
+  "label": "Recorded",
+  "network": "Stellar Testnet (protocol 30)",
+  "ranAt": "2026-11-04T13:05:07.658Z",
+  "steps": 11,
+  "unexpected": 0,
+  "howTheIntruderWasRefused": "TransactionFailedError",
+  "contracts": {
+    "accessPolicy": "CDO5VKZCJKVATAN57OQE255RD5TDE2YOQWW4IFMNHVD6FPRGXV5SZLKG",
+    "accessPolicyWasmSha256": "f702e9d267262ab3f9548fa62021b4c31bb5b5f4f3652ff713906dcd48906814",
+    "testToken": "CCCJFOHZMEM2WEKPN5237EIBOREFF6SE6QYZEKSDISLAEWC7BCKXEYEY",
+    "testTokenWasmSha256": "89146b0e1d5ae367c9c46499710a966e16cfdc6e58fa663949c6af39840922f3"
+  },
+  "results": [
+    {
+      "step": "create, signed by the owner: the new policy id comes back",
+      "expected": "1",
+      "actual": "1",
+      "ok": true,
+      "txHash": "0db2d848057974babbb58522b972367e2e1c6fb69114e5410417078807f68da0"
+    },
+    {
+      "step": "the stored policy is what was sent",
+      "expected": "version 1, active, minimum 100",
+      "actual": "version 1, active, minimum 100",
+      "ok": true
+    },
+    {
+      "step": "update, signed by the owner",
+      "expected": "version 2, active, minimum 500",
+      "actual": "version 2, active, minimum 500",
+      "ok": true,
+      "txHash": "16e0a48d93a40d30d88d6e30ca57b0c1a86d97dec7626e7361ce9cd03934b6c9"
+    },
+    {
+      "step": "set_active(false), signed by the owner",
+      "expected": "version 2, inactive, minimum 500",
+      "actual": "version 2, inactive, minimum 500",
+      "ok": true,
+      "txHash": "33451a2236b42b10e71c55f341aaabeeb991cf60ed1ed25658d7c0165eb656f1"
+    },
+    {
+      "step": "an inactive policy denies, whatever the balance",
+      "expected": "Inactive",
+      "actual": "Inactive",
+      "ok": true
+    },
+    {
+      "step": "set_active(true) brings it back, version unchanged",
+      "expected": "version 2, active, minimum 500",
+      "actual": "version 2, active, minimum 500",
+      "ok": true,
+      "txHash": "1f79bbca781f00a9227b552287983291be2abd3635ed195de24944c52e0d1401"
+    },
+    {
+      "step": "a policy the SDK can see is invalid never reaches the network",
+      "expected": "InvalidPolicyError(InvalidMinimum)",
+      "actual": "InvalidPolicyError(InvalidMinimum)",
+      "ok": true
+    },
+    {
+      "step": "the contract refuses an account address as a token while the transaction is being prepared",
+      "expected": "ContractCallError(NotAContract)",
+      "actual": "ContractCallError(NotAContract)",
+      "ok": true
+    },
+    {
+      "step": "updating a policy that does not exist",
+      "expected": "ContractCallError(PolicyNotFound)",
+      "actual": "ContractCallError(PolicyNotFound)",
+      "ok": true
+    },
+    {
+      "step": "the intruder signs an update of the owner's policy (refused either while preparing or when applied)",
+      "expected": "refused",
+      "actual": "refused",
+      "ok": true
+    },
+    {
+      "step": "the policy is unchanged",
+      "expected": "version 2, active, minimum 500",
+      "actual": "version 2, active, minimum 500",
+      "ok": true
+    }
+  ]
+}
