@@ -22,6 +22,10 @@ Label: **Live** means the fact was read from the network on the date shown. It w
 | Specification | [`spec/SPEC.md`](../spec/SPEC.md), draft 0.1, as at the commit above |
 | Policy versions | A policy starts at version 1 and its version goes up by one on every `update`. A deactivation does not change it |
 
+On 2026-11-04 Testnet moved to protocol 30. The scripts were run again with this contract's exact bytes and with the current source, and
+all steps and comparisons held: see [`evidence/testnet-protocol-30-2026-11-04.md`](evidence/testnet-protocol-30-2026-11-04.md). The table above is
+the record of the deployment on 2026-10-07, at protocol 29, and is not rewritten.
+
 ## What that means
 
 - **Policies on this contract belong to whoever created them.** The contract itself has no authority over any policy.
@@ -68,6 +72,10 @@ What this does and does not show:
 - It was compared **across machines**: on 2026-10-07 the CI check ran on GitHub's runner, with the same pinned Rust compiler
   (1.96.0) and stellar-cli 28.1.0, and reported the build as the deployed code, differing only in the CLI version. It was **not**
   compared across Rust compiler versions.
+- **The lockfile is part of the identity.** Building the commit after the deployment's `Cargo.lock` changed (`serde_json` 1.0.151 to
+  1.0.154, an automatic dependency update) gives a different hash, `0238d758…`, although `contracts/` has only new tests. Taking that
+  one file back from the deployment commit gives `f702e9d2…` again. To check the deployed code, build **the deployment commit** (the
+  `Built from` row above), not the latest `main`; see [`evidence/testnet-protocol-30-2026-11-04.md`](evidence/testnet-protocol-30-2026-11-04.md).
 - **CI makes this comparison on every push** (`npm run check:deployed-wasm`, from `.github/workflows/ci.yml`). It passes when
   the build is the deployed code, or when the contract's sources have changed since the deployment commit (the deployment is
   then an older version, and the check says so). It **fails** when the sources have not changed but the code differs,
