@@ -1,0 +1,6 @@
+# Changes to these paths need a review from the code owner (enforced by the branch ruleset).
+# The contracts and the spec define what is deployed; the rest controls what CI and releases trust.
+/.github/ @larryjay007
+/SECURITY.md @larryjay007
+/contracts/ @larryjay007
+/spec/ @larryjay007
