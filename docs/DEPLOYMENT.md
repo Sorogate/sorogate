@@ -14,7 +14,7 @@ Label: **Live** means the fact was read from the network on the date shown. It w
 | Contract | `contracts/access-policy`, workspace version `0.0.0` (pre-release; the contract has no on-chain version function, so the WASM hash below is its identity) |
 | WASM hash | `f702e9d267262ab3f9548fa62021b4c31bb5b5f4f3652ff713906dcd48906814`, 11,457 bytes. The code was fetched back from the network after deployment and compared with the local build byte for byte |
 | WASM hash, ignoring the CLI version | `10170e707598f15fe8edf5bdf0817e1733a697496c5aa277931e23049ba1fce8`. The same file with the value of one metadata entry, `cliver`, blanked: see [below](#check-that-it-is-this-code) |
-| Built from | commit `1e94264549a220a80d97347386042810f48e47ba`, `stellar contract build` with stellar-cli 27.1.0, rustc 1.96.0, soroban-sdk 28.0.0 |
+| Built from | commit `1e94264549a220a80d97347386042810f48e47ba` (tagged [`testnet-deployment-2026-10-07`](https://github.com/Sorogate/sorogate/releases/tag/testnet-deployment-2026-10-07)), `stellar contract build` with stellar-cli 27.1.0, rustc 1.96.0, soroban-sdk 28.0.0 |
 | Deployment transactions | upload `e75b58c3bc2cb569c15dcd0a0acde7b1a22c40e9a38b9f1a377659fd17147c85`; create `ce7ca6247655cb0457cd44aa3c6b9a308a0793bd368a3929a070fd87d3971fba` (ledger 5,071,126) |
 | Deployment date | 2026-10-07, 13:20:17 UTC (close time of the creation transaction) |
 | Deployed by | `GBZEURYLVXFGQ5HOF6UFAP64SXN3Y74GPCONROASPJNSWQFH5PCZ6GAY`, a throwaway account whose secret key was never printed or saved |
@@ -45,14 +45,18 @@ the record of the deployment on 2026-10-07, at protocol 29, and is not rewritten
 
 ## Check that it is this code
 
-Anyone can check that the code on the network is the code in this repository. It needs no key and sends nothing:
+Anyone can check that the code on the network is the code in this repository. It needs no key and sends nothing. Build the
+**tagged deployment commit** in a separate folder, because a build of the latest `main` is not the deployed code (see the
+lockfile note below), and run the check from a checkout of `main`, because the check script did not exist at the deployment commit:
 
 ```bash
-stellar contract build
+git fetch --tags
+git worktree add ../sorogate-deployed testnet-deployment-2026-10-07
+(cd ../sorogate-deployed && stellar contract build)
 npm ci
 npm run testnet:deployment -w @sorogate/sdk -- verify \
   --contract CACR5H46E7VKEDJUWRLKZPJPQVPRHTRTJHZOMQLEIHMTXN4MW7O47YQW \
-  --wasm ../../target/wasm32v1-none/release/access_policy.wasm
+  --wasm ../../../sorogate-deployed/target/wasm32v1-none/release/access_policy.wasm
 ```
 
 It prints the size and hash of the code the network holds and of your build, and says `IDENTICAL`, `IDENTICAL EXCEPT THE CLI VERSION` or
@@ -74,8 +78,8 @@ What this does and does not show:
   compared across Rust compiler versions.
 - **The lockfile is part of the identity.** Building the commit after the deployment's `Cargo.lock` changed (`serde_json` 1.0.151 to
   1.0.154, an automatic dependency update) gives a different hash, `0238d758…`, although `contracts/` has only new tests. Taking that
-  one file back from the deployment commit gives `f702e9d2…` again. To check the deployed code, build **the deployment commit** (the
-  `Built from` row above), not the latest `main`; see [`evidence/testnet-protocol-30-2026-11-04.md`](evidence/testnet-protocol-30-2026-11-04.md).
+  one file back from the deployment commit gives `f702e9d2…` again. To check the deployed code, build **the deployment commit** (the tag
+  `testnet-deployment-2026-10-07`), not the latest `main`; see [`evidence/testnet-protocol-30-2026-11-04.md`](evidence/testnet-protocol-30-2026-11-04.md).
 - **CI makes this comparison on every push** (`npm run check:deployed-wasm`, from `.github/workflows/ci.yml`). It passes when
   the build is the deployed code, or when the contract's sources have changed since the deployment commit (the deployment is
   then an older version, and the check says so). It **fails** when the sources have not changed but the code differs,
