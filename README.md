@@ -1,13 +1,13 @@
 # Sorogate
 
-Reusable **access policies** for Stellar, stored in a Soroban contract and evaluated the same way from
-other contracts and from TypeScript.
-
 [![CI](https://github.com/Sorogate/sorogate/actions/workflows/ci.yml/badge.svg)](https://github.com/Sorogate/sorogate/actions/workflows/ci.yml)
 [![Audit](https://github.com/Sorogate/sorogate/actions/workflows/audit.yml/badge.svg)](https://github.com/Sorogate/sorogate/actions/workflows/audit.yml)
 [![Release](https://img.shields.io/github/v/release/Sorogate/sorogate)](https://github.com/Sorogate/sorogate/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-496c8e)](LICENSE)
 [![Status: early development, Testnet only](https://img.shields.io/badge/status-early%20development%2C%20Testnet%20only-d9822b)](docs/DEPLOYMENT.md)
+
+Reusable **access policies** for Stellar, stored in a Soroban contract and evaluated the same way from
+other contracts and from TypeScript.
 
 > **Status: early development. Testnet only. Not audited. Not production.**
 > There is one public **development deployment on Stellar Testnet**, described in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). It is
