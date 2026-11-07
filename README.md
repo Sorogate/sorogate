@@ -1,4 +1,13 @@
+<div align="center">
+
+<img src="docs/brand/logo.svg" alt="Sorogate logo" width="120">
+
 # Sorogate
+
+Reusable **access policies** for Stellar, stored in a Soroban contract and evaluated the same way from
+other contracts and from TypeScript.
+
+**Status: early development. Testnet only. Not audited. Not production.**
 
 [![CI](https://github.com/Sorogate/sorogate/actions/workflows/ci.yml/badge.svg)](https://github.com/Sorogate/sorogate/actions/workflows/ci.yml)
 [![Audit](https://github.com/Sorogate/sorogate/actions/workflows/audit.yml/badge.svg)](https://github.com/Sorogate/sorogate/actions/workflows/audit.yml)
@@ -6,10 +15,8 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-496c8e)](LICENSE)
 [![Status: early development, Testnet only](https://img.shields.io/badge/status-early%20development%2C%20Testnet%20only-d9822b)](docs/DEPLOYMENT.md)
 
-Reusable **access policies** for Stellar, stored in a Soroban contract and evaluated the same way from
-other contracts and from TypeScript.
+</div>
 
-> **Status: early development. Testnet only. Not audited. Not production.**
 > There is one public **development deployment on Stellar Testnet**, described in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). It is
 > not a production deployment, and Testnet is reset from time to time. The other Testnet runs in `docs/evidence` used
 > throwaway deployments.
